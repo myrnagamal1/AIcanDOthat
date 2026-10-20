@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI at Work — SAP 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --blue:    #0070F2;
+  --blue2:   #0057C2;
+  --navy:    #00144A;
+  --navy2:   #002A86;
+  --green:   #19A979;
+  --orange:  #E76500;
+  --bg:      #F5F6F8;
+  --bg2:     #ECEEF1;
+  --white:   #FFFFFF;
+  --text:    #1D2129;
+  --text2:   #4A5568;
+  --text3:   #718096;
+  --border:  #D1D5DB;
+  --border2: #E5E7EB;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--white);
+  color: var(--text);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* ── TOP PROGRESS BAR ─────────────────────────────── */
+#progress {
+  position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 1000;
+  background: linear-gradient(90deg, var(--blue), var(--navy));
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform .1s linear;
+}
+
+/* ── STICKY NAV ───────────────────────────────────── */
+nav {
+  position: fixed; top: 3px; left: 0; right: 0; z-index: 999;
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border2);
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+}
+.nav-logo-mark {
+  height: 44px; width: auto; display: block;
+}
+.nav-title { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -0.2px; }
+.nav-sub { font-size: 13px; color: var(--text3); margin-left: 4px; font-weight: 400; }
+.nav-pills { display: flex; gap: 4px; }
+.nav-pill {
+  font-size: 12px; font-weight: 500; color: var(--text3);
+  padding: 5px 12px; border-radius: 100px;
+  cursor: pointer; transition: background .15s, color .15s;
+  border: none; background: transparent;
+}
+.nav-pill:hover { background: var(--bg); color: var(--text); }
+.nav-pill.active { background: var(--navy); color: white; }
+
+/* ── SCROLL DOTS (right side) ─────────────────────── */
+.scroll-dots {
+  position: fixed; right: 16px; top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 8px; z-index: 998;
+}
+.scroll-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--border); cursor: pointer;
+  transition: background .3s, transform .3s;
+}
+.scroll-dot.active { background: var(--blue); transform: scale(1.5); }
+
+/* ── SECTIONS ─────────────────────────────────────── */
+section {
+  min-height: 100vh;
+  padding: 96px 48px 72px;
+  position: relative;
+}
+section:nth-child(even) { background: var(--bg); }
+
+.container { max-width: 960px; margin: 0 auto; }
+
+/* ── EYEBROW / LABELS ─────────────────────────────── */
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--blue);
+  margin-bottom: 16px;
+}
+.eyebrow::before {
+  content: ''; display: block;
+  width: 20px; height: 2px; background: var(--blue);
+  border-radius: 2px;
+}
+
+/* ── HEADINGS ─────────────────────────────────────── */
+.h1 {
+  font-size: clamp(36px, 6vw, 56px);
+  font-weight: 800; line-height: 1.1;
+  color: var(--navy); letter-spacing: -1px;
+  margin-bottom: 20px;
+}
+.h2 {
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 800; line-height: 1.12;
+  color: var(--navy); letter-spacing: -0.8px;
+  margin-bottom: 20px;
+}
+.h2 em { font-style: normal; color: var(--blue); }
+.lead {
+  font-size: 18px; line-height: 1.7; color: var(--text2);
+  max-width: 600px; margin-bottom: 40px;
+}
+.lead strong { color: var(--text); font-weight: 600; }
+
+/* ── CARDS GRID ───────────────────────────────────── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 40px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 40px; }
+.grid-2-auto { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 40px; }
+
+.card {
+  background: var(--white);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  padding: 28px 24px;
+  opacity: 0; transform: translateY(16px);
+  transition: opacity .45s, transform .45s, box-shadow .2s;
+}
+.card.alt { background: var(--bg); }
+.card.in { opacity: 1; transform: translateY(0); }
+.card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+.card-icon { font-size: 28px; margin-bottom: 16px; }
+.card-badge {
+  display: inline-block; margin-bottom: 12px;
+  font-size: 10px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 100px;
+  background: rgba(0,112,242,.1); color: var(--blue);
+}
+.card-badge.green { background: rgba(25,169,121,.1); color: var(--green); }
+.card-badge.orange { background: rgba(231,101,0,.1); color: var(--orange); }
+.card-badge.navy { background: rgba(0,20,74,.08); color: var(--navy2); }
+.card-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+.card-body { font-size: 13px; color: var(--text2); line-height: 1.65; }
+
+/* ── SECTION DIVIDER ──────────────────────────────── */
+.sep { border: none; border-top: 1px solid var(--border2); margin: 0; }
+
+/* ── BUTTONS ──────────────────────────────────────── */
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--blue); color: white;
+  padding: 13px 24px; border-radius: 10px;
+  font-size: 14px; font-weight: 600; font-family: inherit;
+  border: none; cursor: pointer;
+  transition: background .2s, transform .15s;
+  text-decoration: none;
+}
+.btn-primary:hover { background: var(--blue2); transform: translateY(-1px); }
+.btn-primary svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; color: var(--text);
+  padding: 12px 24px; border-radius: 10px;
+  border: 1.5px solid var(--border);
+  font-size: 14px; font-weight: 600; font-family: inherit;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+  text-decoration: none;
+}
+.btn-secondary:hover { border-color: var(--blue); color: var(--blue); background: rgba(0,112,242,.04); }
+.btn-secondary svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+.btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+
+/* ── STATUS BADGE ─────────────────────────────────── */
+.status-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(25,169,121,.1); border: 1px solid rgba(25,169,121,.25);
+  border-radius: 100px; padding: 7px 14px;
+  font-size: 12px; font-weight: 600; color: var(--green);
+  margin-bottom: 20px;
+}
+.status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); flex-shrink: 0; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+/* ── JOULE PROMPT ─────────────────────────────────── */
+.joule-prompt {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--bg); border: 1px solid var(--border2);
+  border-radius: 100px; padding: 12px 20px;
+  margin-top: 36px; max-width: 560px; cursor: pointer;
+  transition: border-color .2s, box-shadow .2s;
+}
+.joule-prompt:hover { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0,112,242,.08); }
+.joule-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--navy), var(--blue));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: white; flex-shrink: 0;
+}
+.joule-text { display: flex; flex-direction: column; }
+.joule-label { font-size: 10px; font-weight: 700; color: var(--blue); text-transform: uppercase; letter-spacing: .5px; }
+.joule-suggestion { font-size: 13px; color: var(--text2); font-style: italic; }
+
+/* ── HERO (S1) ────────────────────────────────────── */
+#s1 {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(0, 20, 74, 0.82) 0%,
+      rgba(0, 20, 74, 0.65) 50%,
+      rgba(0, 42, 134, 0.78) 100%
+    ),
+    url('https://images.unsplash.com/photo-1518770660439-4636190af475?w=2400&q=80&fit=crop') center / cover no-repeat;
+  display: flex; flex-direction: column; justify-content: center;
+  min-height: 100vh;
+  position: relative;
+}
+#s1::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 70% 50%, rgba(0,112,242,0.12) 0%, transparent 65%);
+  pointer-events: none;
+}
+#s1 .eyebrow { color: rgba(255,255,255,.6); }
+#s1 .eyebrow::before { background: rgba(255,255,255,.4); }
+#s1 .h1 { color: white; }
+#s1 .lead { color: rgba(255,255,255,.75); max-width: none; }
+#s1 .lead strong { color: white; }
+
+.hero-accent {
+  display: inline; color: #5BA4FF;
+}
+
+.hero-meta {
+  display: flex; gap: 32px; margin-bottom: 48px; flex-wrap: wrap;
+  opacity: 0; animation: fadeUp .6s .9s forwards;
+}
+.hero-meta-item { display: flex; flex-direction: column; gap: 2px; }
+.hero-meta-label { font-size: 11px; font-weight: 600; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: .8px; }
+.hero-meta-value { font-size: 20px; font-weight: 800; color: white; }
+
+.hero-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 48px; }
+.hero-card {
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 14px; padding: 24px 20px;
+  opacity: 0; animation: fadeUp .5s forwards;
+}
+.hero-card:nth-child(1) { animation-delay: 1.1s; }
+.hero-card:nth-child(2) { animation-delay: 1.25s; }
+.hero-card-icon { font-size: 24px; margin-bottom: 10px; }
+.hero-card-title { font-size: 15px; font-weight: 700; color: white; margin-bottom: 6px; }
+.hero-card-body { font-size: 13px; color: rgba(255,255,255,.6); line-height: 1.6; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hero-eyebrow-wrap { opacity: 0; animation: fadeUp .5s .3s forwards; }
+.hero-h1-wrap { opacity: 0; animation: fadeUp .6s .5s forwards; }
+.hero-lead-wrap { opacity: 0; animation: fadeUp .6s .7s forwards; }
+
+/* ── FEATURE LIST ─────────────────────────────────── */
+.feature-list { display: flex; flex-direction: column; gap: 2px; margin-top: 32px; }
+.feature-row {
+  display: flex; align-items: flex-start; gap: 20px;
+  padding: 22px 24px; background: var(--white);
+  border-radius: 0; border-top: 1px solid var(--border2);
+  opacity: 0; transform: translateX(-12px);
+  transition: opacity .4s, transform .4s;
+}
+.feature-row:first-child { border-top: none; }
+.feature-list > .feature-row:first-child { border-radius: 14px 14px 0 0; }
+.feature-list > .feature-row:last-child { border-radius: 0 0 14px 14px; }
+.feature-row.in { opacity: 1; transform: translateX(0); }
+.feature-row:hover { background: var(--bg); }
+.feature-num { font-size: 12px; font-weight: 700; color: var(--blue); min-width: 24px; padding-top: 2px; }
+.feature-content { flex: 1; }
+.feature-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.feature-desc { font-size: 13px; color: var(--text2); line-height: 1.65; }
+.feature-tag {
+  flex-shrink: 0; font-size: 10px; font-weight: 700; letter-spacing: .3px;
+  padding: 4px 12px; border-radius: 100px; white-space: nowrap; align-self: center;
+  background: rgba(0,112,242,.08); color: var(--blue);
+}
+.feature-tag.g { background: rgba(25,169,121,.1); color: var(--green); }
+.feature-tag.o { background: rgba(231,101,0,.1); color: var(--orange); }
+
+/* ── DEMO TERMINAL ────────────────────────────────── */
+.demo-wrap {
+  background: var(--white); border: 1px solid var(--border2);
+  border-radius: 16px; overflow: hidden; margin-top: 32px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+}
+.demo-chrome {
+  display: flex; align-items: center; gap: 7px;
+  padding: 14px 18px; border-bottom: 1px solid var(--border2);
+  background: var(--bg);
+}
+.demo-chrome-dot { width: 11px; height: 11px; border-radius: 50%; }
+.demo-chrome-label { margin-left: 6px; font-size: 12px; color: var(--text3); }
+
+.demo-body { display: grid; grid-template-columns: 1fr 1.4fr; min-height: 340px; }
+
+.wf-col { border-right: 1px solid var(--border2); padding: 20px; display: flex; flex-direction: column; }
+.wf-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; color: var(--text3); text-transform: uppercase; margin-bottom: 14px; }
+
+.wf-node {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 13px; border-radius: 10px; border: 1.5px solid var(--border2);
+  opacity: .4; transform: translateX(-4px);
+  transition: all .3s cubic-bezier(.16,1,.3,1);
+  background: var(--bg);
+}
+.wf-node.on { opacity: 1; transform: translateX(0); border-color: rgba(0,112,242,.4); background: rgba(0,112,242,.04); }
+.wf-node.done { opacity: .65; transform: translateX(0); border-color: rgba(25,169,121,.3); background: rgba(25,169,121,.04); }
+.wf-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--bg2); display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+.wf-name { font-size: 12px; font-weight: 600; color: var(--text); }
+.wf-stat { font-size: 10px; color: var(--text3); margin-top: 1px; }
+.wf-badge { margin-left: auto; font-size: 9px; font-weight: 700; padding: 3px 8px; border-radius: 100px; }
+.b-idle { background: var(--bg2); color: var(--text3); }
+.b-run { background: rgba(0,112,242,.12); color: var(--blue); }
+.b-done { background: rgba(25,169,121,.12); color: var(--green); }
+
+.wf-line { width: 1px; height: 8px; margin-left: 27px; background: var(--border); opacity: 0; transition: opacity .3s; }
+.wf-line.on { opacity: 1; }
+
+.play-btn {
+  margin-top: auto; padding: 11px 20px;
+  background: var(--blue); color: white; border: none; border-radius: 9px;
+  font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
+  transition: background .2s;
+}
+.play-btn:hover { background: var(--blue2); }
+.play-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+.log-col { padding: 18px 20px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; background: #FAFBFC; }
+.log-line { font-size: 11px; font-family: 'Courier New', monospace; line-height: 1.7; opacity: 0; transform: translateY(2px); transition: all .2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.log-line.in { opacity: 1; transform: translateY(0); }
+.lt { color: var(--text3); }
+.lk { color: var(--green); }
+.li { color: var(--blue); }
+.lw { color: var(--orange); }
+.ld { color: var(--navy); font-weight: 700; }
+
+.log-result {
+  margin-top: 10px; padding: 12px 14px;
+  background: rgba(25,169,121,.06); border: 1px solid rgba(25,169,121,.2); border-radius: 9px;
+  opacity: 0; transition: opacity .5s;
+}
+.log-result.in { opacity: 1; }
+.lr-title { font-size: 12px; font-weight: 700; color: var(--green); margin-bottom: 3px; }
+.lr-body  { font-size: 11px; color: var(--text3); }
+
+.stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 0; border-top: 1px solid var(--border2); }
+.stat-box { padding: 18px; text-align: center; opacity: 0; transform: translateY(8px); transition: all .4s; border-right: 1px solid var(--border2); }
+.stat-box:last-child { border-right: none; }
+.stat-box.in { opacity: 1; transform: translateY(0); }
+.stat-num { font-size: 28px; font-weight: 900; color: var(--navy); font-variant-numeric: tabular-nums; }
+.stat-lbl { font-size: 10px; color: var(--text3); margin-top: 3px; font-weight: 500; }
+
+/* ── MARQUEE ──────────────────────────────────────── */
+.marquee-wrap {
+  border-top: 1px solid var(--border2); border-bottom: 1px solid var(--border2);
+  padding: 12px 0; margin: 36px -48px; overflow: hidden; background: var(--bg);
+}
+.marquee-track { display: flex; gap: 40px; width: max-content; animation: marquee-scroll 22s linear infinite; }
+.marquee-track:hover { animation-play-state: paused; }
+@keyframes marquee-scroll { to { transform: translateX(-50%); } }
+.m-item { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text3); white-space: nowrap; }
+.m-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--blue); }
+
+/* ── CTA SECTION ──────────────────────────────────── */
+#s6 {
+  background: var(--navy);
+}
+#s6 .eyebrow { color: rgba(255,255,255,.5); }
+#s6 .eyebrow::before { background: rgba(255,255,255,.3); }
+#s6 .h2 { color: white; }
+#s6 .h2 em { color: #5BA4FF; }
+#s6 .lead { color: rgba(255,255,255,.65); }
+
+.cta-steps { display: flex; flex-direction: column; gap: 0; margin: 40px 0; border: 1px solid rgba(255,255,255,.12); border-radius: 16px; overflow: hidden; }
+.cta-step {
+  display: flex; align-items: flex-start; gap: 20px;
+  padding: 24px 28px; border-bottom: 1px solid rgba(255,255,255,.08);
+  opacity: 0; transform: translateX(-16px); transition: opacity .5s, transform .5s;
+}
+.cta-step:last-child { border-bottom: none; }
+.cta-step.in { opacity: 1; transform: translateX(0); }
+.cta-step:hover { background: rgba(255,255,255,.04); }
+.cta-n { font-size: 12px; font-weight: 700; color: #5BA4FF; min-width: 24px; padding-top: 3px; }
+.cta-title { font-size: 16px; font-weight: 700; color: white; margin-bottom: 5px; }
+.cta-desc { font-size: 13px; color: rgba(255,255,255,.55); line-height: 1.65; }
+
+.cta-btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.cta-btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: white; color: var(--navy);
+  padding: 14px 28px; border-radius: 10px;
+  font-size: 15px; font-weight: 700; font-family: inherit;
+  border: none; cursor: pointer;
+  transition: transform .15s, box-shadow .2s;
+}
+.cta-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,0,0,.2); }
+.cta-btn-ghost {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; color: rgba(255,255,255,.8);
+  padding: 13px 24px; border-radius: 10px;
+  border: 1.5px solid rgba(255,255,255,.2);
+  font-size: 14px; font-weight: 600; font-family: inherit;
+  cursor: pointer; transition: border-color .2s, color .2s;
+}
+.cta-btn-ghost:hover { border-color: rgba(255,255,255,.5); color: white; }
+
+.joule-prompt.light {
+  background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.15);
+}
+.joule-prompt.light .joule-suggestion { color: rgba(255,255,255,.6); }
+.joule-prompt.light:hover { border-color: rgba(255,255,255,.35); box-shadow: none; }
+
+/* ── REVEAL ANIMATION ─────────────────────────────── */
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity .5s, transform .5s; }
+.reveal.in { opacity: 1; transform: translateY(0); }
+
+/* ── INFO BOX ─────────────────────────────────────── */
+.info-box {
+  background: var(--bg); border: 1px solid var(--border2);
+  border-left: 3px solid var(--blue);
+  border-radius: 10px; padding: 18px 20px; margin-top: 24px;
+  font-size: 14px; color: var(--text2); line-height: 1.65;
+}
+.info-box strong { color: var(--text); }
+
+/* ── TWO COLUMN ───────────────────────────────────── */
+.two-col-feature {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 40px;
+}
+.tcf-head { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+.tcf-body { font-size: 14px; color: var(--text2); line-height: 1.65; margin-bottom: 16px; }
+
+/* ── AGENT FACTORY STEPS ──────────────────────────── */
+.steps-row {
+  display: flex; gap: 0; margin-top: 32px;
+  border: 1px solid var(--border2); border-radius: 14px; overflow: hidden;
+}
+.step-box {
+  flex: 1; padding: 24px 20px; border-right: 1px solid var(--border2);
+  opacity: 0; transform: translateY(12px); transition: opacity .45s, transform .45s;
+}
+.step-box.in { opacity: 1; transform: translateY(0); }
+.step-box:last-child { border-right: none; }
+.step-box:hover { background: var(--bg); }
+.step-num {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--navy); color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; margin-bottom: 14px;
+}
+.step-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.step-desc { font-size: 12px; color: var(--text2); line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<nav>
+  <div class="nav-logo">
+    <img class="nav-logo-mark" src="sap-logo.png" alt="SAP">
+    <span class="nav-title">AI at Work</span>
+    <span class="nav-sub">2026</span>
+  </div>
+  <div class="nav-pills" id="navPills">
+    <button class="nav-pill active" data-s="s1">Intro</button>
+    <button class="nav-pill" data-s="s2">Enterprise</button>
+    <button class="nav-pill" data-s="s3">Connect</button>
+    <button class="nav-pill" data-s="s3b">CSE</button>
+    <button class="nav-pill" data-s="s3c">Agent Factory</button>
+    <button class="nav-pill" data-s="s4">Demo</button>
+    <button class="nav-pill" data-s="s5">Trends</button>
+    <button class="nav-pill" data-s="s7">GitHub</button>
+    <button class="nav-pill" data-s="s8">Share</button>
+  </div>
+  <button onclick="startPresenter()" style="margin-left:12px;background:var(--blue);color:white;border:none;border-radius:8px;padding:6px 14px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;">▶ Present</button>
+</nav>
+
+<!-- ── PRESENTER HUD ─────────────────────────────────── -->
+<!-- ── SPEAKER NOTES PANEL ────────────────────────────── -->
+<div id="notesPanel" style="display:none;position:fixed;right:24px;top:80px;width:300px;max-height:calc(100vh - 180px);overflow-y:auto;z-index:9998;background:rgba(0,20,74,0.93);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:20px;color:white;font-family:Inter,sans-serif;box-shadow:0 8px 40px rgba(0,0,0,.4);">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+    <span style="font-size:.7rem;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.4);">Speaker Notes</span>
+    <button onclick="document.getElementById('notesPanel').style.display='none'" style="background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:1rem;">✕</button>
+  </div>
+  <div id="notesContent" style="font-size:.88rem;line-height:1.7;color:rgba(255,255,255,.85);"></div>
+</div>
+
+<div id="presenterHud" style="display:none;position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:9999;background:rgba(0,20,74,0.93);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:14px 28px;display:none;align-items:center;gap:24px;box-shadow:0 8px 40px rgba(0,0,0,.4);color:white;font-family:Inter,sans-serif;user-select:none;">
+  <div style="display:flex;flex-direction:column;gap:3px;">
+    <span id="hudSection" style="font-size:.95rem;font-weight:600;color:white;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Intro</span>
+    <span id="hudCount" style="font-size:.72rem;color:rgba(255,255,255,.45);">1 / 10</span>
+  </div>
+  <div style="width:1px;height:44px;background:rgba(255,255,255,.15);"></div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <button onclick="closePresenter()" style="background:transparent;border:none;color:rgba(255,255,255,.35);padding:7px;font-size:1rem;cursor:pointer;line-height:1;">✕</button>
+  </div>
+</div>
+
+<div class="scroll-dots" id="scrollDots">
+  <div class="scroll-dot active" data-s="s1"></div>
+  <div class="scroll-dot" data-s="s2"></div>
+  <div class="scroll-dot" data-s="s3"></div>
+  <div class="scroll-dot" data-s="s3b"></div>
+  <div class="scroll-dot" data-s="s3c"></div>
+  <div class="scroll-dot" data-s="s4"></div>
+  <div class="scroll-dot" data-s="s5"></div>
+  <div class="scroll-dot" data-s="s7"></div>
+  <div class="scroll-dot" data-s="s8"></div>
+</div>
+
+<!-- ════════════════════════════════════════
+     S1 — HERO
+════════════════════════════════════════ -->
+<section id="s1">
+  <div class="container">
+    <div class="hero-eyebrow-wrap">
+      <div class="eyebrow">AI at Work · SAP All-Hands 2026</div>
+    </div>
+
+    <div class="hero-h1-wrap">
+      <h1 class="h1">Will AI replace<br><span class="hero-accent">your job?</span></h1>
+    </div>
+
+    <div class="hero-lead-wrap">
+      <p class="lead">No. But <strong>someone using AI will.</strong> The question isn't whether AI changes work — it already has. The question is: are you the one using it?</p>
+    </div>
+
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Tools covered</span>
+        <span class="hero-meta-value">Joule · n8n · CSE · Agent Factory</span>
+      </div>
+    </div>
+
+    <div class="hero-cards">
+      <div class="hero-card">
+        <div class="hero-card-icon">📋</div>
+        <div class="hero-card-title">What this covers</div>
+        <div class="hero-card-body">SAP Connect 2026 news, live automation demo, the trends reshaping enterprise work, and three concrete steps you can take today.</div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-icon">⚡</div>
+        <div class="hero-card-title">Why now</div>
+        <div class="hero-card-body">AI productivity gains are compounding. Colleagues using AI today are already 2× faster. The gap widens every month you wait.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ════════════════════════════════════════
+     S2 — AUTONOMOUS ENTERPRISE
+════════════════════════════════════════ -->
+<section id="s2">
+  <div class="container">
+    <div class="eyebrow reveal">The Big Idea</div>
+    <h2 class="h2 reveal">The <em>Autonomous</em><br>Enterprise</h2>
+    <p class="lead reveal">SAP's defining bet for the next decade. AI that doesn't just assist — it <strong>runs</strong> entire business processes end-to-end. No manual handoffs. No waiting.</p>
+
+    <div class="two-col-feature reveal">
+      <div>
+        <div class="tcf-head">Finance — automated</div>
+        <div class="tcf-body">Invoice processing, reconciliation, forecasting and reporting. Your team focuses on decisions, not data entry.</div>
+        <button class="btn-secondary">Explore Finance AI <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+      </div>
+      <div>
+        <div class="tcf-head">HR + Supply Chain — automated</div>
+        <div class="tcf-body">Hiring, onboarding, skills matching, demand sensing, supplier risk scoring — all AI-driven from day one.</div>
+        <button class="btn-primary">See TechWolf deal <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+      </div>
+    </div>
+
+    <div class="info-box reveal" style="transition-delay:.1s">
+      <strong>The shift:</strong> SAP isn't adding AI features to existing products. SAP is rebuilding the entire enterprise platform around AI as the operating layer. Every process, every decision, every workflow — AI-native from the ground up.
+    </div>
+
+    <div class="joule-prompt reveal" style="transition-delay:.2s">
+      <div class="joule-avatar">J</div>
+      <div class="joule-text">
+        <span class="joule-label">Ask Joule</span>
+        <span class="joule-suggestion">"What does the Autonomous Enterprise mean for my team?"</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ════════════════════════════════════════
+     S3 — SAP CONNECT NEWS
+════════════════════════════════════════ -->
+<section id="s3">
+  <div class="container">
+    <div class="eyebrow reveal">SAP Connect 2026</div>
+    <h2 class="h2 reveal">What just happened<br>at <em>SAP</em></h2>
+    <p class="lead reveal">Five announcements every employee needs to know — straight from Connect 2026.</p>
+
+    <!-- Joule 2.0 hero banner -->
+    <div class="reveal" style="margin-top:2rem;background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:20px;padding:2.5rem;display:flex;align-items:center;gap:2rem;flex-wrap:wrap;position:relative;overflow:hidden;">
+      <div style="position:absolute;right:-40px;top:-40px;width:220px;height:220px;border-radius:50%;background:rgba(0,112,242,.15);pointer-events:none;"></div>
+      <div style="width:64px;height:64px;border-radius:18px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0;">💬</div>
+      <div style="flex:1;min-width:200px;">
+        <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.45);margin-bottom:.4rem;">Headline Announcement</div>
+        <div style="font-size:1.5rem;font-weight:800;color:white;margin-bottom:.5rem;">Joule 2.0 — now in every SAP product</div>
+        <div style="font-size:.95rem;color:rgba(255,255,255,.7);line-height:1.6;">Role-specific AI assistants for Finance, HR, Procurement and Supply Chain. Not a chatbot — a specialised co-worker who knows your function deeply and acts inside your workflows.</div>
+      </div>
+      <div style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:1.25rem 1.75rem;text-align:center;flex-shrink:0;">
+        <div style="font-size:2rem;font-weight:800;color:white;">400M+</div>
+        <div style="font-size:.78rem;color:rgba(255,255,255,.5);margin-top:2px;">SAP users getting Joule</div>
+      </div>
+    </div>
+
+    <!-- "Already in your system" callout -->
+    <div class="reveal" style="margin-top:1.25rem;background:#EEF5FF;border-radius:14px;padding:1.25rem 1.75rem;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;">
+      <div style="font-size:1.5rem;">👉</div>
+      <div style="font-size:.97rem;color:var(--navy);font-weight:600;">If your team uses <span style="color:var(--blue);">S/4HANA</span>, <span style="color:var(--blue);">SuccessFactors</span>, or <span style="color:var(--blue);">Ariba</span> — <strong>Joule is already live in your system.</strong> You don't need to request it. Open it today.</div>
+    </div>
+
+    <div class="grid-2" style="margin-top:1.5rem;">
+      <div class="card">
+        <div class="card-badge navy">Strategy</div>
+        <div class="card-icon">🤖</div>
+        <div class="card-title">Autonomous Enterprise</div>
+        <div class="card-body">AI runs entire business processes end-to-end. The biggest platform shift since cloud migration.</div>
+      </div>
+      <div class="card">
+        <div class="card-badge">Platform</div>
+        <div class="card-icon">🏗️</div>
+        <div class="card-title">SAP Business AI Platform</div>
+        <div class="card-body">One unified platform to build, deploy and govern AI across all SAP products. No more siloed AI tools.</div>
+      </div>
+      <div class="card">
+        <div class="card-badge navy">Acquisition</div>
+        <div class="card-icon">🧠</div>
+        <div class="card-title">TechWolf Acquired</div>
+        <div class="card-body">AI-powered skills intelligence. SAP now maps exactly what skills your workforce has and needs — in real time.</div>
+      </div>
+      <div class="card" style="background:var(--navy);border-color:var(--navy);">
+        <div class="card-badge" style="background:rgba(255,255,255,.15);color:white">Key Message</div>
+        <div class="card-icon">⚡</div>
+        <div class="card-title" style="color:white">The take-away</div>
+        <div class="card-body" style="color:rgba(255,255,255,.7)">SAP isn't adding AI features. SAP is <strong style="color:white">rebuilding the enterprise around AI.</strong></div>
+      </div>
+    </div>
+
+    <div class="joule-prompt reveal" style="transition-delay:.4s">
+      <div class="joule-avatar">J</div>
+      <div class="joule-text">
+        <span class="joule-label">Ask Joule</span>
+        <span class="joule-suggestion">"Summarise the SAP Connect 2026 AI announcements for me"</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ════════════════════════════════════════
+     S3b — CSE + VALLY
+════════════════════════════════════════ -->
+<section id="s3b">
+  <div class="container">
+    <div class="eyebrow reveal">For SAP Internal Teams</div>
+    <h2 class="h2 reveal">CSE + Vally:<br>Your <em>AI research</em><br>co-worker</h2>
+    <p class="lead reveal">Customer Strategy Explorer and Vally Agent are available <strong>right now</strong> for SAP sales, advisory, and customer success teams. Deep account research in minutes, not days.</p>
+
+    <div class="status-badge reveal">
+      <div class="status-dot"></div>
+      Live now for SAP internal teams
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-icon">🔍</div>
+        <div class="card-title">Deep Research Briefs</div>
+        <div class="card-body">AI synthesises external sources into a structured company brief — even for private companies where annual reports don't exist.</div>
+        <span class="card-badge" style="margin-top:12px;display:inline-block">Research</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">📊</div>
+        <div class="card-title">Executive Value Brief</div>
+        <div class="card-body">Cuts prep effort by up to 80%. AI maps customer imperatives to SAP solutions and generates a polished PowerPoint in minutes.</div>
+        <span class="card-badge green" style="margin-top:12px;display:inline-block">Deliverable</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔗</div>
+        <div class="card-title">Story Finder</div>
+        <div class="card-body">Searches a curated repository of SAP customer success stories, ranked by relevance to your specific business challenge.</div>
+        <span class="card-badge" style="margin-top:12px;display:inline-block">Content</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔒</div>
+        <div class="card-title">Secure External Sharing</div>
+        <div class="card-body">Host AI-generated presentations via password-protected links. Share with customers without exposing internal systems.</div>
+        <span class="card-badge navy" style="margin-top:12px;display:inline-block">Security</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🧮</div>
+        <div class="card-title">AI Value Calculator</div>
+        <div class="card-body">Builds a full Autonomous Enterprise value case with Excel model + PowerPoint output. Surfaces AI expansion opportunities.</div>
+        <span class="card-badge orange" style="margin-top:12px;display:inline-block">Value</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔌</div>
+        <div class="card-title">Joule Desktop MCP</div>
+        <div class="card-body">Connect CSE and Vally to Joule Work Desktop. Run account research and value cases without switching apps.</div>
+        <span class="card-badge" style="margin-top:12px;display:inline-block">Integration</span>
+      </div>
+    </div>
+
+    <div class="two-col-feature reveal" style="transition-delay:.2s">
+      <div>
+        <div class="tcf-head">Access CSE today</div>
+        <div class="tcf-body">Go to cse.for.sap. Log in with your SAP credentials. Start with a company you're working on and ask Vally to prepare an account brief.</div>
+        <div class="btn-row">
+          <a class="btn-primary" href="https://cse.cfapps.us10.hana.ondemand.com" target="_blank">Open cse.for.sap <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <div class="tcf-head">Connect to Joule Desktop</div>
+        <div class="tcf-body">Add the CSE MCP connector in Joule Work Desktop to get account research and value tools without leaving the app. Setup takes under 5 minutes.</div>
+        <div class="btn-row">
+          <button class="btn-secondary">MCP setup guide <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="joule-prompt reveal" style="transition-delay:.3s">
+      <div class="joule-avatar">J</div>
+      <div class="joule-text">
+        <span class="joule-label">Ask Joule in CSE</span>
+        <span class="joule-suggestion">"Research [company name] and prepare an Executive Value Brief"</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ════════════════════════════════════════
+     S3c — AGENT FACTORY
+════════════════════════════════════════ -->
+<section id="s3c">
+  <div class="container">
+    <div class="eyebrow reveal">SAP Internal Tool</div>
+    <h2 class="h2 reveal">Agent Factory:<br>Build <em>AI agents</em><br>in minutes</h2>
+    <p class="lead reveal">Describe a business scenario in plain language. Agent Factory builds a ready-to-run team of AI agents — deployed to SAP BTP and <strong>live in Joule within minutes.</strong></p>
+
+    <div class="status-badge reveal">
+      <div class="status-dot"></div>
+      Available on SAP BTP · A2A Protocol
+    </div>
+
+    <div class="steps-row reveal" style="transition-delay:.1s">
+      <div class="step-box">
+        <div class="step-num">1</div>
+        <div class="step-title">Describe</div>
+        <div class="step-desc">Type your business scenario in plain language. e.g. "We need to automate invoice exception handling in Finance"</div>
+      </div>
+      <div class="step-box">
+        <div class="step-num">2</div>
+        <div class="step-title">Expand</div>
+        <div class="step-desc">AI generates detailed storyline options with agent roles, data sources, and SAP system connections. Pick or refine.</div>
+      </div>
+      <div class="step-box">
+        <div class="step-num">3</div>
+        <div class="step-title">Deploy</div>
+        <div class="step-desc">Click "Use this Storyline". Agent Factory builds and deploys your agent team to Cloud Foundry automatically.</div>
+      </div>
+      <div class="step-box">
+        <div class="step-num">4</div>
+        <div class="step-title">Live in Joule</div>
+        <div class="step-desc">Your agent is available in Joule within minutes. Real SAP data. Real workflows. Zero code written.</div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top:20px">
+      <div class="card alt">
+        <div class="card-icon">🏭</div>
+        <div class="card-title">Express Mode</div>
+        <div class="card-body">The fastest path: describe → confirm → deploy. No code. No configuration. Designed for business users who know what they need but not how to build it.</div>
+        <span class="card-badge green" style="margin-top:12px;display:inline-block">No-code</span>
+      </div>
+      <div class="card alt">
+        <div class="card-icon">📦</div>
+        <div class="card-title">Joule Studio Import</div>
+        <div class="card-body">Already have an agent built in Joule Studio? Import the ZIP file directly into Agent Factory — no rebuild needed. Agents already on the production line are available immediately.</div>
+        <span class="card-badge" style="margin-top:12px;display:inline-block">Import</span>
+      </div>
+    </div>
+
+    <div class="two-col-feature reveal" style="transition-delay:.2s;margin-top:32px">
+      <div>
+        <div class="tcf-head">Try it now</div>
+        <div class="tcf-body">Go to Agent Factory Express Mode. Enter your namespace (your SAP user ID, e.g. <code style="background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:12px">i763300</code>), describe a business scenario, and watch AI build your agent team.</div>
+        <div class="btn-row">
+          <a class="btn-primary" href="https://agent-factory.cfapps.us10.hana.ondemand.com/express.html" target="_blank">Open Agent Factory <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg></a>
+          <a class="btn-secondary" href="https://teams.microsoft.com/l/team/19%3AQDnbfrw1Q8nASfaegpxE2D4_cv4TQ1DNL0OejIWom_s1%40thread.tacv2/conversations?groupId=48fca8dd-86ab-41c4-ad12-a11ec9761d67&tenantId=42f7676c-f455-423c-82f6-dc2d99791af7" target="_blank">Teams support <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <div class="tcf-head">Agents already on the line</div>
+        <div class="tcf-body">Agent Factory has live agents running on SAP BTP covering Finance, EHS, Supply Chain, HR and more. Browse the production line to see what's already built and running — or chat with them in Orchestrator X.</div>
+        <div class="btn-row">
+          <a class="btn-secondary" href="https://agent-factory.cfapps.us10.hana.ondemand.com/" target="_blank">Browse agents <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="joule-prompt reveal" style="transition-delay:.3s">
+      <div class="joule-avatar">J</div>
+      <div class="joule-text">
+        <span class="joule-label">Try in Agent Factory</span>
+        <span class="joule-suggestion">"Build an agent to monitor overdue invoices and alert Finance teams automatically"</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ════════════════════════════════════════
+     S4 — LIVE DEMO
+════════════════════════════════════════ -->
+<section id="s4">
+  <div class="container">
+    <div class="eyebrow reveal">Live Automation Demo</div>
+    <h2 class="h2 reveal">Watch AI work<br>in <em>real time</em></h2>
+    <p class="lead reveal">Scenario: a customer support email arrives. AI classifies, routes, drafts a reply, and logs a ticket in SAP — in under 5 seconds. Zero human touches.</p>
+
+    <div class="demo-wrap reveal">
+      <div class="demo-chrome">
+        <div class="demo-chrome-dot" style="background:#FF5F57"></div>
+        <div class="demo-chrome-dot" style="background:#FFBD2E"></div>
+        <div class="demo-chrome-dot" style="background:#28CA41"></div>
+        <span class="demo-chrome-label">n8n · Smart Email Triage · Execution log</span>
+      </div>
+
+      <div class="demo-body">
+        <div class="wf-col">
+          <div class="wf-label">Workflow steps</div>
+          <div class="wf-node" id="wn0">
+            <div class="wf-icon">📧</div>
+            <div><div class="wf-name">Email Trigger</div><div class="wf-stat" id="ws0">Waiting…</div></div>
+            <span class="wf-badge b-idle" id="wb0">IDLE</span>
+          </div>
+          <div class="wf-line" id="wl0"></div>
+          <div class="wf-node" id="wn1">
+            <div class="wf-icon">🤖</div>
+            <div><div class="wf-name">Claude — Classify</div><div class="wf-stat" id="ws1">Pending…</div></div>
+            <span class="wf-badge b-idle" id="wb1">WAIT</span>
+          </div>
+          <div class="wf-line" id="wl1"></div>
+          <div class="wf-node" id="wn2">
+            <div class="wf-icon">🔀</div>
+            <div><div class="wf-name">Route by Priority</div><div class="wf-stat" id="ws2">Pending…</div></div>
+            <span class="wf-badge b-idle" id="wb2">WAIT</span>
+          </div>
+          <div class="wf-line" id="wl2"></div>
+          <div class="wf-node" id="wn3">
+            <div class="wf-icon">💬</div>
+            <div><div class="wf-name">Draft Reply (AI)</div><div class="wf-stat" id="ws3">Pending…</div></div>
+            <span class="wf-badge b-idle" id="wb3">WAIT</span>
+          </div>
+          <div class="wf-line" id="wl3"></div>
+          <div class="wf-node" id="wn4">
+            <div class="wf-icon">📊</div>
+            <div><div class="wf-name">Log to SAP</div><div class="wf-stat" id="ws4">Pending…</div></div>
+            <span class="wf-badge b-idle" id="wb4">WAIT</span>
+          </div>
+          <button class="play-btn" id="playBtn" onclick="runDemo()">▶  Run Demo</button>
+        </div>
+        <div class="log-col" id="logBody">
+          <div style="font-size:11px;color:var(--text3);font-family:monospace;margin-bottom:8px"># Click "Run Demo" to start execution</div>
+        </div>
+        <div class="log-result" id="logResult">
+            <div class="lr-title">✅ Complete — 4.2 seconds · 0 human touches</div>
+            <div class="lr-body">Classified URGENT · Escalated Tier-2 · Auto-reply sent · SAP ticket #TKT-8821 created</div>
+          </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-box" id="st0"><div class="stat-num" data-target="4.2" data-suffix="s">—</div><div class="stat-lbl">Execution time</div></div>
+        <div class="stat-box" id="st1"><div class="stat-num" data-target="0">—</div><div class="stat-lbl">Human touches</div></div>
+        <div class="stat-box" id="st2"><div class="stat-num" data-target="5">—</div><div class="stat-lbl">Steps automated</div></div>
+      </div>
+    </div>
+
+    <div class="two-col-feature reveal" style="margin-top:32px">
+      <div>
+        <div class="tcf-head">Get started with n8n</div>
+        <div class="tcf-body">Free cloud account. No code needed. Build your first workflow in under an hour — connect email, Teams, SAP and any API.</div>
+        <a class="btn-primary" href="https://n8n.io" target="_blank">Open n8n.io <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg></a>
+      </div>
+      <div style="transition-delay:.1s">
+        <div class="tcf-head">Automate your own workflow</div>
+        <div class="tcf-body">Think of one repetitive task you do this week. Chances are n8n + Claude can handle it in minutes, not hours.</div>
+        <button class="btn-secondary">Watch 5-min tutorial <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ════════════════════════════════════════
+     S5 — TRENDS
+════════════════════════════════════════ -->
+<section id="s5">
+  <div class="container">
+    <div class="eyebrow reveal">What's coming</div>
+    <h2 class="h2 reveal">AI trends every SAP<br>employee should <em>know</em></h2>
+    <p class="lead reveal">Not hype. Already reshaping enterprise work in 2026.</p>
+  </div>
+
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <div class="m-item"><div class="m-dot"></div>Agentic AI</div>
+      <div class="m-item"><div class="m-dot"></div>AI Memory</div>
+      <div class="m-item"><div class="m-dot"></div>Multimodal</div>
+      <div class="m-item"><div class="m-dot"></div>Enterprise Search</div>
+      <div class="m-item"><div class="m-dot"></div>Reasoning Models</div>
+      <div class="m-item"><div class="m-dot"></div>AI Governance</div>
+      <div class="m-item"><div class="m-dot"></div>Autonomous Enterprise</div>
+      <div class="m-item"><div class="m-dot"></div>AI Agents</div>
+      <div class="m-item"><div class="m-dot"></div>Agentic AI</div>
+      <div class="m-item"><div class="m-dot"></div>AI Memory</div>
+      <div class="m-item"><div class="m-dot"></div>Multimodal</div>
+      <div class="m-item"><div class="m-dot"></div>Enterprise Search</div>
+      <div class="m-item"><div class="m-dot"></div>Reasoning Models</div>
+      <div class="m-item"><div class="m-dot"></div>AI Governance</div>
+      <div class="m-item"><div class="m-dot"></div>Autonomous Enterprise</div>
+      <div class="m-item"><div class="m-dot"></div>AI Agents</div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="feature-list">
+      <div class="feature-row">
+        <span class="feature-num">01</span>
+        <div class="feature-content">
+          <div class="feature-title">Agentic AI</div>
+          <div class="feature-desc">AI that doesn't just answer — it acts. Books meetings, files tickets, runs multi-step workflows while you sleep.</div>
+        </div>
+        <span class="feature-tag g">Here Now</span>
+      </div>
+      <div class="feature-row">
+        <span class="feature-num">02</span>
+        <div class="feature-content">
+          <div class="feature-title">AI Memory</div>
+          <div class="feature-desc">Models that remember your preferences, past conversations, and work context. Gets smarter every time you use it.</div>
+        </div>
+        <span class="feature-tag">2026</span>
+      </div>
+      <div class="feature-row">
+        <span class="feature-num">03</span>
+        <div class="feature-content">
+          <div class="feature-title">Multimodal AI</div>
+          <div class="feature-desc">Upload a whiteboard photo, PDF, or chart. AI understands all formats. No more copy-pasting between tools.</div>
+        </div>
+        <span class="feature-tag g">Here Now</span>
+      </div>
+      <div class="feature-row">
+        <span class="feature-num">04</span>
+        <div class="feature-content">
+          <div class="feature-title">Enterprise AI Search</div>
+          <div class="feature-desc">Find anything across SAP, Teams, email, SharePoint in one natural language query. The end of "where did I save that?"</div>
+        </div>
+        <span class="feature-tag o">2026–27</span>
+      </div>
+      <div class="feature-row">
+        <span class="feature-num">05</span>
+        <div class="feature-content">
+          <div class="feature-title">Reasoning Models</div>
+          <div class="feature-desc">o3, Claude Opus — they think before answering. 10× more accurate on complex finance, legal, and strategy tasks.</div>
+        </div>
+        <span class="feature-tag">Scaling Now</span>
+      </div>
+      <div class="feature-row">
+        <span class="feature-num">06</span>
+        <div class="feature-content">
+          <div class="feature-title">AI Governance</div>
+          <div class="feature-desc">Every company needs AI policies, audit trails, and responsible-use frameworks. SAP built this in; most competitors haven't.</div>
+        </div>
+        <span class="feature-tag o">Critical</span>
+      </div>
+    </div>
+
+    <div class="joule-prompt reveal" style="transition-delay:.3s;margin-top:32px">
+      <div class="joule-avatar">J</div>
+      <div class="joule-text">
+        <span class="joule-label">Ask Joule</span>
+        <span class="joule-suggestion">"Which of these AI trends is most relevant to my job role?"</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     S7 — GITHUB: HOST YOUR PROJECT
+════════════════════════════════════════ -->
+<section id="s7">
+  <div class="container">
+    <div class="eyebrow reveal">Version Control</div>
+    <h2 class="h2 reveal">Host Your Project on <em>GitHub</em></h2>
+    <p class="lead reveal">GitHub lets your team store code, collaborate, and share what you've built — all in one place. Here's how to get started.</p>
+
+    <div class="gh-steps reveal" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;margin-top:2.5rem;">
+
+      <div class="gh-card" style="background:#fff;border-radius:16px;padding:2rem;box-shadow:0 4px 24px rgba(0,0,0,.07);border:1px solid #E8EDF5;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:4px;background:var(--blue);border-radius:4px 4px 0 0;"></div>
+        <div style="width:44px;height:44px;border-radius:12px;background:#EEF5FF;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;font-size:1.4rem;">1️⃣</div>
+        <h3 style="font-size:1.05rem;font-weight:700;color:var(--navy);margin-bottom:.5rem;">Create a Repository</h3>
+        <p style="font-size:.92rem;color:var(--text2);line-height:1.6;">Go to <strong>github.com</strong> → click <em>New Repository</em>. Give it a name, set it to <em>Private</em> (for internal work) or <em>Public</em>. Hit <em>Create</em>.</p>
+      </div>
+
+      <div class="gh-card" style="background:#fff;border-radius:16px;padding:2rem;box-shadow:0 4px 24px rgba(0,0,0,.07);border:1px solid #E8EDF5;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:4px;background:var(--blue);border-radius:4px 4px 0 0;"></div>
+        <div style="width:44px;height:44px;border-radius:12px;background:#EEF5FF;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;font-size:1.4rem;">2️⃣</div>
+        <h3 style="font-size:1.05rem;font-weight:700;color:var(--navy);margin-bottom:.5rem;">Push Your Files</h3>
+        <p style="font-size:.92rem;color:var(--text2);line-height:1.6;">In your terminal, run:<br>
+        <code style="background:#F0F4FF;border-radius:6px;padding:2px 7px;font-size:.85rem;color:var(--navy2);">git init → git add . → git commit -m "first" → git push</code><br>
+        Or drag &amp; drop files directly in the GitHub web UI.</p>
+      </div>
+
+      <div class="gh-card" style="background:#fff;border-radius:16px;padding:2rem;box-shadow:0 4px 24px rgba(0,0,0,.07);border:1px solid #E8EDF5;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:4px;background:var(--blue);border-radius:4px 4px 0 0;"></div>
+        <div style="width:44px;height:44px;border-radius:12px;background:#EEF5FF;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;font-size:1.4rem;">3️⃣</div>
+        <h3 style="font-size:1.05rem;font-weight:700;color:var(--navy);margin-bottom:.5rem;">Enable GitHub Pages</h3>
+        <p style="font-size:.92rem;color:var(--text2);line-height:1.6;">Settings → <em>Pages</em> → set Source to <em>main branch</em>. Your site goes live at <strong>yourusername.github.io/repo-name</strong> — perfect for HTML presentations like this one!</p>
+      </div>
+
+      <div class="gh-card" style="background:#fff;border-radius:16px;padding:2rem;box-shadow:0 4px 24px rgba(0,0,0,.07);border:1px solid #E8EDF5;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:4px;background:var(--green);border-radius:4px 4px 0 0;"></div>
+        <div style="width:44px;height:44px;border-radius:12px;background:#EDFAF4;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;font-size:1.4rem;">💡</div>
+        <h3 style="font-size:1.05rem;font-weight:700;color:var(--navy);margin-bottom:.5rem;">SAP GitHub Access</h3>
+        <p style="font-size:.92rem;color:var(--text2);line-height:1.6;">Use your SAP GitHub Enterprise account at <strong>github.tools.sap</strong> for internal projects. Your I-number login works. Ask your manager for org access if needed.</p>
+      </div>
+
+    </div>
+
+    <div class="reveal" style="margin-top:2.5rem;padding:1.5rem 2rem;background:linear-gradient(135deg,#EEF5FF,#F5F0FF);border-radius:16px;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
+      <div style="font-size:2rem;">🚀</div>
+      <div>
+        <strong style="color:var(--navy);display:block;margin-bottom:.25rem;">Pro tip: use Claude Code to generate your README</strong>
+        <span style="color:var(--text2);font-size:.93rem;">Ask Claude: <em>"Write a README for my project that explains what it does and how to run it."</em> Then paste it into a <code style="background:rgba(0,0,0,.06);border-radius:4px;padding:1px 5px;">README.md</code> file at the root of your repo.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     S8 — SHARE YOUR WORK
+════════════════════════════════════════ -->
+<section id="s8">
+  <div class="container">
+    <div class="eyebrow reveal">Contribute</div>
+    <h2 class="h2 reveal">Share What You've <em>Built</em></h2>
+    <p class="lead reveal">Two ways to put your work in front of the whole team — pick the path that fits what you made.</p>
+
+    <div class="share-paths reveal" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2rem;margin-top:2.5rem;">
+
+      <!-- PATH 1: Joule Skill Hub -->
+      <div style="background:#fff;border-radius:20px;padding:2.5rem;box-shadow:0 6px 32px rgba(0,0,0,.08);border:2px solid #E8EDF5;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--blue),#7B5EA7);"></div>
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
+          <div style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#EEF5FF,#E8E0FF);display:flex;align-items:center;justify-content:center;font-size:1.7rem;flex-shrink:0;">🧠</div>
+          <div>
+            <h3 style="font-size:1.2rem;font-weight:700;color:var(--navy);margin:0;">Publish to Joule Skill Hub</h3>
+            <span style="font-size:.85rem;color:var(--blue);font-weight:600;">For AI skills &amp; automations</span>
+          </div>
+        </div>
+        <p style="font-size:.93rem;color:var(--text2);line-height:1.65;margin-bottom:1.5rem;">Built a Joule skill, prompt template, or AI workflow? Submit it to the Skill Hub so the entire SAP community can discover and reuse it.</p>
+        <div style="display:flex;flex-direction:column;gap:.75rem;margin-bottom:1.75rem;">
+          <div style="display:flex;align-items:center;gap:.75rem;font-size:.9rem;color:var(--text);">
+            <span style="width:24px;height:24px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;">1</span>
+            Package your skill with a description &amp; sample prompts
+          </div>
+          <div style="display:flex;align-items:center;gap:.75rem;font-size:.9rem;color:var(--text);">
+            <span style="width:24px;height:24px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;">2</span>
+            Submit via the Joule Skill Hub submission form
+          </div>
+          <div style="display:flex;align-items:center;gap:.75rem;font-size:.9rem;color:var(--text);">
+            <span style="width:24px;height:24px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;">3</span>
+            Team reviews &amp; publishes — your name stays on it
+          </div>
+        </div>
+        <div style="background:#F0F7FF;border-radius:10px;padding:1rem 1.25rem;font-size:.88rem;color:var(--text2);">
+          <strong style="color:var(--navy);">Best for:</strong> prompt chains, Joule extensions, AI-powered automations, reusable templates
+        </div>
+      </div>
+
+      <!-- PATH 2: Forecast Sheet Resources -->
+      <div style="background:#fff;border-radius:20px;padding:2.5rem;box-shadow:0 6px 32px rgba(0,0,0,.08);border:2px solid #E8EDF5;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--green),#19C9A9);"></div>
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
+          <div style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#EDFAF4,#E0FFF6);display:flex;align-items:center;justify-content:center;font-size:1.7rem;flex-shrink:0;">📊</div>
+          <div>
+            <h3 style="font-size:1.2rem;font-weight:700;color:var(--navy);margin:0;">Get Added to Forecast Resources</h3>
+            <span style="font-size:.85rem;color:var(--green);font-weight:600;">For tools, guides &amp; project showcases</span>
+          </div>
+        </div>
+        <p style="font-size:.93rem;color:var(--text2);line-height:1.65;margin-bottom:1.5rem;">Built a tool, dashboard, or guide the team should know about? Get it listed in the Forecast Sheet so it shows up when colleagues are planning their work.</p>
+        <div style="display:flex;flex-direction:column;gap:.75rem;margin-bottom:1.75rem;">
+          <div style="display:flex;align-items:center;gap:.75rem;font-size:.9rem;color:var(--text);">
+            <span style="width:24px;height:24px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;">1</span>
+            Write a 1–2 sentence description of what you built
+          </div>
+          <div style="display:flex;align-items:center;gap:.75rem;font-size:.9rem;color:var(--text);">
+            <span style="width:24px;height:24px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;">2</span>
+            Reach out to the AI at Work team with a link
+          </div>
+          <div style="display:flex;align-items:center;gap:.75rem;font-size:.9rem;color:var(--text);">
+            <span style="width:24px;height:24px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;">3</span>
+            We add it to the sheet — visible to the whole team
+          </div>
+        </div>
+        <div style="background:#F0FBF6;border-radius:10px;padding:1rem 1.25rem;font-size:.88rem;color:var(--text2);">
+          <strong style="color:var(--navy);">Best for:</strong> dashboards, how-to guides, n8n flows, GitHub repos, presentations, demos
+        </div>
+      </div>
+
+    </div>
+
+    <div class="reveal" style="margin-top:2.5rem;text-align:center;padding:2rem;background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:20px;color:white;">
+      <p style="font-size:1.15rem;font-weight:600;margin-bottom:.5rem;">Every contribution makes the team smarter.</p>
+      <p style="font-size:.95rem;color:rgba(255,255,255,.7);">Don't wait until it's perfect — share early, share often.</p>
+    </div>
+  </div>
+</section>
+
+<script>
+// ── PROGRESS BAR ─────────────────────────────────────────
+const bar = document.getElementById('progress');
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+  bar.style.transform = `scaleX(${pct})`;
+}, { passive: true });
+
+// ── NAV + DOTS ────────────────────────────────────────────
+const sections = ['s1','s2','s3','s3b','s3c','s4','s5','s7','s8'];
+const dots = document.querySelectorAll('.scroll-dot');
+const navPills = document.querySelectorAll('.nav-pill');
+
+dots.forEach(d => d.addEventListener('click', () => {
+  document.getElementById(d.dataset.s)?.scrollIntoView({ behavior: 'smooth' });
+}));
+navPills.forEach(p => p.addEventListener('click', () => {
+  document.getElementById(p.dataset.s)?.scrollIntoView({ behavior: 'smooth' });
+}));
+
+function updateNav() {
+  let active = 0;
+  sections.forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.5) active = i;
+  });
+  dots.forEach((d, i) => d.classList.toggle('active', i === active));
+  navPills.forEach((p, i) => p.classList.toggle('active', i === active));
+}
+
+// ── REVEAL ON SCROLL ──────────────────────────────────────
+function checkReveal() {
+  document.querySelectorAll('.reveal, .card, .feature-row, .cta-step, .step-box').forEach(el => {
+    if (el.getBoundingClientRect().top < window.innerHeight - 40 && !el.classList.contains('in')) {
+      el.classList.add('in');
+    }
+  });
+  updateNav();
+  checkDemo();
+}
+
+window.addEventListener('scroll', checkReveal, { passive: true });
+
+// ── n8n DEMO ──────────────────────────────────────────────
+const steps = [
+  { node:0, status:"customer@acme.com received", badge:"RUN", bc:"b-run", nc:"on",
+    logs:[
+      {t:"09:41:02",c:"li",m:"Trigger: new email from customer@acme.com"},
+      {t:"09:41:02",c:"li",m:'Subject: "URGENT: System down, production affected"'},
+    ]},
+  { node:1, status:"Analysing with Claude…", badge:"RUN", bc:"b-run", nc:"on",
+    logs:[
+      {t:"09:41:02",c:"li",m:"Calling Claude API · classify email…"},
+      {t:"09:41:03",c:"lk",m:"→ Priority: URGENT | Category: Production Issue"},
+      {t:"09:41:03",c:"lk",m:"→ Sentiment: Frustrated | SLA breach risk: HIGH"},
+    ]},
+  { node:2, status:"URGENT → escalation path", badge:"RUN", bc:"b-run", nc:"on",
+    logs:[
+      {t:"09:41:03",c:"lw",m:"Router: URGENT → escalate to Tier-2"},
+      {t:"09:41:03",c:"li",m:"Notifying: team-tier2@sap.com via Teams"},
+    ]},
+  { node:3, status:"Drafting personalised reply…", badge:"RUN", bc:"b-run", nc:"on",
+    logs:[
+      {t:"09:41:04",c:"li",m:"Claude drafting reply with customer context…"},
+      {t:"09:41:04",c:"lk",m:"Reply drafted: acknowledgement + ETA + ticket ref"},
+      {t:"09:41:04",c:"lk",m:"Email sent to customer@acme.com ✓"},
+    ]},
+  { node:4, status:"SAP ticket #TKT-8821 created", badge:"DONE", bc:"b-done", nc:"on",
+    logs:[
+      {t:"09:41:05",c:"lk",m:"SAP Service Cloud: ticket #TKT-8821 created"},
+      {t:"09:41:05",c:"lk",m:"Priority: P1 | Owner: Tier-2 | SLA: 4h"},
+      {t:"09:41:05",c:"ld",m:"✅ COMPLETE — 4.2s | 0 human touches | 5 steps"},
+    ]},
+];
+
+let running = false;
+let demoFired = false;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+async function runDemo() {
+  if (running) return;
+  running = true;
+  const btn = document.getElementById('playBtn');
+  btn.disabled = true; btn.textContent = '⏳ Running…';
+
+  const logBody = document.getElementById('logBody');
+  logBody.innerHTML = '<div style="font-size:11px;color:var(--text3);font-family:monospace;margin-bottom:8px"># Executing…</div>';
+  document.getElementById('logResult').classList.remove('in');
+  document.querySelectorAll('.stat-box').forEach(s => s.classList.remove('in'));
+  document.querySelectorAll('.wf-line').forEach(l => l.classList.remove('on'));
+  for (let i = 0; i < 5; i++) {
+    const n = document.getElementById('wn'+i);
+    n.className = 'wf-node';
+    document.getElementById('ws'+i).textContent = i===0?'Waiting…':'Pending…';
+    const b = document.getElementById('wb'+i);
+    b.textContent = i===0?'IDLE':'WAIT'; b.className = 'wf-badge b-idle';
+  }
+  await sleep(300);
+
+  for (let si = 0; si < steps.length; si++) {
+    const s = steps[si];
+    const n = document.getElementById('wn'+s.node);
+    n.className = 'wf-node ' + s.nc;
+    document.getElementById('ws'+s.node).textContent = s.status;
+    const b = document.getElementById('wb'+s.node);
+    b.textContent = s.badge; b.className = 'wf-badge ' + s.bc;
+    if (s.node > 0) document.getElementById('wl'+(s.node-1)).classList.add('on');
+
+    for (const log of s.logs) {
+      await sleep(340);
+      const el = document.createElement('div');
+      el.className = 'log-line';
+      el.innerHTML = `<span class="lt">[${log.t}]</span> <span class="${log.c}"> ${log.m}</span>`;
+      logBody.appendChild(el);
+      requestAnimationFrame(() => el.classList.add('in'));
+      logBody.scrollTop = 99999;
+    }
+    if (si > 0) document.getElementById('wn'+(s.node-1)).className = 'wf-node done';
+    await sleep(400);
+  }
+
+  await sleep(300);
+  document.getElementById('logResult').classList.add('in');
+  logBody.scrollTop = 99999;
+  document.querySelectorAll('.stat-box').forEach((s,i) => {
+    setTimeout(() => { s.classList.add('in'); animCount(s.querySelector('.stat-num')); }, i * 150);
+  });
+
+  btn.disabled = false; btn.textContent = '↺  Run Again';
+  running = false;
+}
+
+function animCount(el) {
+  const target = parseFloat(el.dataset.target);
+  const suffix = el.dataset.suffix||'';
+  const dur = 1400, start = performance.now();
+  function step(now) {
+    const p = Math.min((now-start)/dur, 1);
+    const e = 1-Math.pow(1-p,3);
+    el.textContent = (Number.isInteger(target)?Math.round(target*e):(target*e).toFixed(1))+suffix;
+    if (p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+function checkDemo() {
+  if (demoFired) return;
+  const s4 = document.getElementById('s4');
+  if (s4 && s4.getBoundingClientRect().top < window.innerHeight * 0.65) {
+    demoFired = true;
+    setTimeout(runDemo, 500);
+  }
+}
+
+checkReveal();
+
+// ── PRESENTER MODE ────────────────────────────────────
+const speakerNotes = {
+  s1: `<b>Hook (30s):</b> "Will AI replace your job?" — pause for effect. Answer: No, but someone using AI might.<br><br><b>Set the tone:</b> This session is practical. By the end, you'll have tools you can use tomorrow.<br><br><b>Logistics:</b> 20 minutes, interactive, questions at the end.`,
+  s2: `<b>Key message:</b> SAP is betting the company on AI — this isn't a side project.<br><br><b>Stat to stress:</b> 26 trillion business data records. No one else has this context.<br><br><b>Transition:</b> "Let's look at what SAP announced just this year..."`,
+  s3: `<b>SAP Connect 2026 highlights:</b> Joule 2.0, Autonomous Finance, embedded AI in every module.<br><br><b>Tip:</b> If anyone in the room uses S/4, SuccessFactors, or Ariba — point out Joule is already in their system.<br><br><b>Don't linger:</b> This is context-setting, keep it to 2 min.`,
+  s3b: `<b>CSE angle:</b> This is our team's direct connection — SAP Connect + Vally is where we plug in.<br><br><b>Mention:</b> Custom extensions, specialised skills, the work we're already doing.<br><br><b>Personal touch:</b> Invite anyone who's worked with Vally to comment.`,
+  s3c: `<b>Agent Factory:</b> Show the live link if you can — it's impressive to see.<br><br><b>Key point:</b> This is a factory, not a one-off. Any team can request an agent.<br><br><b>Ask the room:</b> "What repetitive task would you automate first?"`,
+  s4: `<b>Demo intro:</b> "This is a real n8n workflow — watch what happens in under 5 seconds."<br><br><b>Walk through each node:</b> Email trigger → Claude classifies → router decides → reply sent.<br><br><b>Pause after:</b> "This workflow took 2 hours to build. It now runs 24/7 with no human in the loop."`,
+  s5: `<b>Don't read the trends — react to them:</b> Ask "Which of these surprises you most?"<br><br><b>Most impactful:</b> Agentic AI and the shift from assistant → autonomous actor.<br><br><b>Bridge:</b> "This is why we're not just using AI tools — we're building with them."`,
+  s6: `<b>Call to action:</b> Pick ONE thing from this list before end of week.<br><br><b>Remove friction:</b> Joule is already in your SAP system. Claude Code is free to try. n8n has a free tier.<br><br><b>Ask:</b> "Who's willing to share what they build in the next Slack update?"`,
+  s7: `<b>For builders:</b> If you built something, don't let it live only on your laptop.<br><br><b>GitHub Pages trick:</b> A single HTML file like this presentation is a website. Free hosting, zero config.<br><br><b>SAP GitHub:</b> github.tools.sap — your I-number works. Ask your manager for org access.`,
+  s8: `<b>Close the loop:</b> The point of all this is to share knowledge, not hoard it.<br><br><b>Two paths:</b> Joule Skill Hub = reusable AI skills. Forecast Sheet = tools & guides.<br><br><b>Final ask:</b> "If you built something today or this week — tell one of us. We'll get it listed."`
+};
+const TOTAL_SECS = 20 * 60;
+const sectionLabels = {
+  s1:'Intro', s2:'Autonomous Enterprise', s3:'SAP Connect',
+  s3b:'CSE + Vally', s3c:'Agent Factory', s4:'n8n Demo',
+  s5:'Trends', s7:'GitHub', s8:'Share Your Work'
+};
+let presSeconds = TOTAL_SECS, presRunning = false, presInterval = null;
+
+function startPresenter() {
+  const hud = document.getElementById('presenterHud');
+  hud.style.display = 'flex';
+  if (!presRunning) toggleTimer();
+  // seed notes for current section
+  let active = 0;
+  sections.forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.5) active = i;
+  });
+  updateHudSection(sections[active], active);
+}
+function closePresenter() {
+  document.getElementById('presenterHud').style.display = 'none';
+  document.getElementById('notesPanel').style.display = 'none';
+  if (presInterval) clearInterval(presInterval);
+  presRunning = false;
+  document.getElementById('hudPlayPause').textContent = '▶ Resume';
+}
+function toggleNotes() {
+  const p = document.getElementById('notesPanel');
+  p.style.display = p.style.display === 'block' ? 'none' : 'block';
+}
+function toggleTimer() {
+  const btn = document.getElementById('hudPlayPause');
+  if (presRunning) {
+    clearInterval(presInterval);
+    presRunning = false;
+    btn.textContent = '▶ Resume';
+  } else {
+    presRunning = true;
+    btn.textContent = '⏸ Pause';
+    presInterval = setInterval(() => {
+      if (presSeconds <= 0) { clearInterval(presInterval); return; }
+      presSeconds--;
+      updateHudTimer();
+    }, 1000);
+  }
+}
+function resetTimer() {
+  clearInterval(presInterval);
+  presRunning = false;
+  presSeconds = TOTAL_SECS;
+  document.getElementById('hudPlayPause').textContent = '▶ Resume';
+  updateHudTimer();
+}
+function updateHudTimer() {
+  const m = Math.floor(presSeconds / 60).toString().padStart(2,'0');
+  const s = (presSeconds % 60).toString().padStart(2,'0');
+  const el = document.getElementById('hudTimer');
+  el.textContent = `${m}:${s}`;
+  el.style.color = presSeconds < 120 ? '#FF6B6B' : presSeconds < 300 ? '#FFB347' : '#5BA4FF';
+}
+function updateHudSection(id, idx) {
+  const label = sectionLabels[id] || id;
+  document.getElementById('hudSection').textContent = label;
+  document.getElementById('hudCount').textContent = `${idx + 1} / ${sections.length}`;
+  const notes = document.getElementById('notesContent');
+  if (notes) notes.innerHTML = speakerNotes[id] || '';
+}
+
+const _origUpdateNav = updateNav;
+updateNav = function() {
+  _origUpdateNav();
+  let active = 0;
+  sections.forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.5) active = i;
+  });
+  if (document.getElementById('presenterHud').style.display === 'flex') {
+    updateHudSection(sections[active], active);
+  }
+};
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+    e.preventDefault();
+    const active = sections.findIndex(id => {
+      const el = document.getElementById(id);
+      return el && el.getBoundingClientRect().top <= window.innerHeight * 0.5;
+    });
+    const next = Math.min(active + 1, sections.length - 1);
+    document.getElementById(sections[next])?.scrollIntoView({ behavior: 'smooth' });
+  }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    const active = sections.findIndex(id => {
+      const el = document.getElementById(id);
+      return el && el.getBoundingClientRect().top <= window.innerHeight * 0.5;
+    });
+    const prev = Math.max(active - 1, 0);
+    document.getElementById(sections[prev])?.scrollIntoView({ behavior: 'smooth' });
+  }
+});
+</script>
+</body>
+</html>
